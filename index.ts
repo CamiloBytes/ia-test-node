@@ -19,7 +19,7 @@ function getNextService() {
 
 const PORT = process.env.PORT || 3000;
 
-const server = createServer(async (req, res) => {
+const handler = async (req: any, res: any) => {
     // Enable CORS manually if needed, or just basic headers
     // For this simple example, we assume same-origin or handled by proxy/client correctly
 
@@ -28,7 +28,7 @@ const server = createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/chat') {
         let body = '';
 
-        req.on('data', chunk => {
+        req.on('data', (chunk: any) => {
             body += chunk.toString();
         });
 
@@ -66,8 +66,15 @@ const server = createServer(async (req, res) => {
 
     res.writeHead(404);
     res.end("Not found");
-});
+};
 
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+const server = createServer(handler);
+
+// Only listen if this file is run directly (not imported)
+if (import.meta.url === `file://${process.argv[1]}`) {
+    server.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
+}
+
+export default handler;
