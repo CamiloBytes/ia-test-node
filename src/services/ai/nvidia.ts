@@ -1,13 +1,14 @@
 import { OpenRouter } from "@openrouter/sdk";
-import type { AIService, ChatMessage } from "../type.js";
+import { AIService, ChatMessage } from '../../types/index.js';
+
 
 // Crear la instancia de OpenRouter con tu API Key
 const openRouter = new OpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 });
 
-export const openRouterService: AIService = {
-  name: "OpenRouter",
+export const nvidiaService: AIService = {
+  name: "Nvidia NeMoTron 3 Nano 30B A3B",
 
   async chat(messages: ChatMessage[]) {
     const chatCompletion = await openRouter.chat.send({

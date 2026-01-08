@@ -1,6 +1,7 @@
 
 import Cerebras from '@cerebras/cerebras_cloud_sdk';
-import type { AIService, ChatMessage } from '../type.js';
+import { AIService, ChatMessage } from '../../types/index.js';
+
 
 
 const cerebras = new Cerebras({
