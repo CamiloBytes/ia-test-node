@@ -10,11 +10,21 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
+# Production Dependencies stage
+FROM base AS prod-deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
 # Build stage
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Generate Prisma Client
+RUN npx prisma generate
+
 RUN pnpm build
 
 # Runner stage
@@ -23,10 +33,20 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Install openssl for Prisma
+RUN apk add --no-cache openssl
+
+# Use existing 'node' user
+USER node
+
 # Copy necessary files
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Copy prod-deps
+COPY --from=prod-deps --chown=node:node /app/node_modules ./node_modules
+# Copy built app
+COPY --from=builder --chown=node:node /app/dist ./dist
+COPY --from=builder --chown=node:node /app/package.json ./package.json
+# Copy prisma schema/migrations if needed
+COPY --from=builder --chown=node:node /app/prisma ./prisma
 
 EXPOSE 3000
 

@@ -37,6 +37,21 @@ A robust Node.js API for AI chat interactions, featuring robust memory persisten
     ```
     The server will start on `http://localhost:3000`.
 
+## Docker Support
+
+You can also run this application using Docker.
+
+1.  **Build the image:**
+    ```bash
+    docker build -t ia-test-node .
+    ```
+
+2.  **Run the container:**
+    Make sure you have your `.env` file configured.
+    ```bash
+    docker run -p 3000:3000 --env-file .env ia-test-node
+    ```
+
 ## API Documentation
 
 ### `POST /chat`
