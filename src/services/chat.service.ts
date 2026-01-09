@@ -4,15 +4,14 @@ import { memoryService } from './memory/index.js';
 import { aiServiceManager } from './ai/index.js';
 
 export const chatService = {
-    async processChat(messages: ChatMessage[], systemInstruction?: string, context?: string) {
+    async processChat(sessionId: string, messages: ChatMessage[], systemInstruction?: string, context?: string) {
         // 1. Save new messages to memory
         for (const message of messages) {
-            await memoryService.addMessage(message);
+            await memoryService.addMessage(sessionId, message);
         }
 
-        // 2. Retrieve history (last 30 messages)
-        const memoryMessages = await memoryService.getMessages();
-        const history = memoryMessages.slice(-30);
+        // 2. Retrieve history (limit handled by service)
+        const history = await memoryService.getMessages(sessionId);
 
         // 2b. Add System/Context Message if provided
         if (systemInstruction || context) {
@@ -47,7 +46,7 @@ export const chatService = {
             } finally {
                 // Save assistant response after stream completes
                 if (fullResponse) {
-                    await memoryService.addMessage({
+                    await memoryService.addMessage(sessionId, {
                         role: 'assistant',
                         content: fullResponse
                     });

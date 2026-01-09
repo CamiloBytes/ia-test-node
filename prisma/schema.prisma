@@ -24,4 +24,7 @@ model Memory {
   role      Role
   content   String
   createdAt DateTime @default(now())
+  sessionId String
+  
+  @@index([sessionId])
 }

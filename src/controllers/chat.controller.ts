@@ -12,7 +12,20 @@ export const chatController = {
 
         req.on('end', async () => {
             try {
-                const { messages, systemInstruction, context } = JSON.parse(body) as { messages: ChatMessage[], systemInstruction?: string, context?: string };
+                const { messages, systemInstruction, context, session_id: bodySessionId } = JSON.parse(body) as {
+                    messages: ChatMessage[],
+                    systemInstruction?: string,
+                    context?: string,
+                    session_id?: string
+                };
+
+                const sessionId = (req.headers['x-session-id'] as string) || bodySessionId;
+
+                if (!sessionId) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Missing session_id in headers or body' }));
+                    return;
+                }
 
                 // Set SSE headers
                 res.writeHead(200, {
@@ -21,7 +34,7 @@ export const chatController = {
                     'Connection': 'keep-alive',
                 });
 
-                const stream = await chatService.processChat(messages, systemInstruction, context);
+                const stream = await chatService.processChat(sessionId, messages, systemInstruction, context);
 
                 for await (const chunk of stream) {
                     res.write(chunk);
