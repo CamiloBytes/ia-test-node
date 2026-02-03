@@ -34,6 +34,12 @@ export const CONFIG = {
         maxTokens: 4096,
         topP: 1,
     },
+
+    /** Instrucción de sistema global de la aplicación (se inyecta automáticamente) */
+    APP_SYSTEM_INSTRUCTION: process.env.APP_SYSTEM_INSTRUCTION || '',
+
+    /** Contexto global de la aplicación (se inyecta automáticamente) */
+    APP_CONTEXT: process.env.APP_CONTEXT || '',
 } as const;
 
 /**
