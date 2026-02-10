@@ -7,7 +7,7 @@ export const CONFIG = {
     MAX_MESSAGES_PER_REQUEST: 50,
 
     /** Límite de mensajes de historia a recuperar por sesión */
-    MEMORY_MESSAGE_LIMIT: 30,
+    MEMORY_MESSAGE_LIMIT: 20,
 
     /** Longitud mínima de session_id */
     MIN_SESSION_ID_LENGTH: 8,
@@ -23,9 +23,9 @@ export const CONFIG = {
 
     /** Configuración de modelos AI */
     AI_MODELS: {
-        CEREBRAS: 'zai-glm-4.6',
-        NVIDIA: 'nvidia/nemotron-3-nano-30b-a3b:free',
-        QWEN3: 'qwen/qwen3-coder:free',
+        CEREBRAS: 'llama-4-scout-17b-16e-instruct',
+        NVIDIA: 'meta-llama/llama-3.1-8b-instruct:free',
+        QWEN3: 'qwen/qwen-2.5-72b-instruct:free',
     },
 
     /** Configuración de generación de IA */

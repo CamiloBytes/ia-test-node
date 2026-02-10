@@ -9,10 +9,29 @@ validateEnvVars();
 const PORT = CONFIG.PORT;
 
 /**
+ * Agrega headers CORS a la respuesta
+ */
+const setCorsHeaders = (res: any) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Session-Id');
+};
+
+/**
  * Handler principal de requests HTTP
  */
 const handler = async (req: any, res: any) => {
     const url = new URL(req.url || '/', `http://${req.headers.host}`);
+
+    // Agregar headers CORS a todas las respuestas
+    setCorsHeaders(res);
+
+    // Manejar preflight requests (OPTIONS)
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        res.end();
+        return;
+    }
 
     // Ruta POST /chat
     if (req.method === 'POST' && url.pathname === '/chat') {
